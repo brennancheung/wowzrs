@@ -1,36 +1,25 @@
 import React from 'react'
-import Badge from '@material-ui/core/Badge'
-import Divider from '@material-ui/core/Divider'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import DashboardIcon from '@material-ui/icons/Dashboard'
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
-import PeopleIcon from '@material-ui/icons/People'
-import BarChartIcon from '@material-ui/icons/BarChart'
-import LayersIcon from '@material-ui/icons/Layers'
-import AssignmentIcon from '@material-ui/icons/Assignment'
+import {
+  Badge,
+  // Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  // ListSubheader,
+} from '@material-ui/core'
+import {
+  Assessment as AssessmentIcon,
+  Assignment as AssignmentIcon,
+  BarChart as BarChartIcon,
+  Dashboard as DashboardIcon,
+  List as ListIcon,
+  Mood as MoodIcon,
+  Timer as TimerIcon,
+} from '@material-ui/icons'
 
 const NavItems = () => (
   <React.Fragment>
-    <List>
-      <ListSubheader inset>Recently Viewed</ListSubheader>
-      <ListItem button>
-        <ListItemIcon><AssignmentIcon /></ListItemIcon>
-        <ListItemText primary="Voltage Divider" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><AssignmentIcon /></ListItemIcon>
-        <ListItemText primary="Ohm's Law" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><AssignmentIcon /></ListItemIcon>
-        <ListItemText primary="Light an LED" />
-      </ListItem>
-    </List>
-    <Divider />
     <List>
       <ListItem button>
         <Badge badgeContent={2} color="secondary">
@@ -39,28 +28,28 @@ const NavItems = () => (
         </Badge>
       </ListItem>
       <ListItem button>
-        <ListItemIcon><LayersIcon /></ListItemIcon>
-        <ListItemText primary="Concepts" />
+        <ListItemIcon><ListIcon /></ListItemIcon>
+        <ListItemText primary="Actions" />
       </ListItem>
       <ListItem button>
-        <ListItemIcon><LayersIcon /></ListItemIcon>
-        <ListItemText primary="Skills" />
+        <ListItemIcon><AssignmentIcon /></ListItemIcon>
+        <ListItemText primary="Goals" />
       </ListItem>
       <ListItem button>
-        <ListItemIcon><ShoppingCartIcon /></ListItemIcon>
-        <ListItemText primary="Components" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><LayersIcon /></ListItemIcon>
-        <ListItemText primary="Projects" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><PeopleIcon /></ListItemIcon>
-        <ListItemText primary="Forums" />
+        <ListItemIcon><AssessmentIcon /></ListItemIcon>
+        <ListItemText primary="Reports" />
       </ListItem>
       <ListItem button>
         <ListItemIcon><BarChartIcon /></ListItemIcon>
-        <ListItemText primary="Your progress" />
+        <ListItemText primary="Weight" />
+      </ListItem>
+      <ListItem button>
+        <ListItemIcon><MoodIcon /></ListItemIcon>
+        <ListItemText primary="Mood" />
+      </ListItem>
+      <ListItem button>
+        <ListItemIcon><TimerIcon /></ListItemIcon>
+        <ListItemText primary="Pomodoro" />
       </ListItem>
     </List>
   </React.Fragment>

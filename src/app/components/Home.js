@@ -1,16 +1,12 @@
 import React from 'react'
-import { withAppContext } from 'core/AppContext'
+import AddGoal from './AddGoal'
+import GoalsForToday from './GoalsForToday'
 
-const Home = ({ context, mutate }) => {
-  // firebase has circular references so we can't JSON.stringify it
-  const { firebase, db, ...rest } = context
+const Home = () => (
+  <div>
+    <AddGoal />
+    <GoalsForToday />
+  </div>
+)
 
-  return (
-    <div>
-      <h1>Home</h1>
-      <pre>{JSON.stringify(rest, null, 4)}</pre>
-    </div>
-  )
-}
-
-export default withAppContext(Home)
+export default Home
