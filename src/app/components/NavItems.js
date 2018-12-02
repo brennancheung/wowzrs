@@ -16,6 +16,7 @@ import {
   List as ListIcon,
   Mood as MoodIcon,
   Timer as TimerIcon,
+  AttachMoney as MoneyIcon,
 } from '@material-ui/icons'
 
 const NavItems = () => (
@@ -40,16 +41,20 @@ const NavItems = () => (
         <ListItemText primary="Reports" />
       </ListItem>
       <ListItem button>
-        <ListItemIcon><BarChartIcon /></ListItemIcon>
-        <ListItemText primary="Weight" />
-      </ListItem>
-      <ListItem button>
         <ListItemIcon><MoodIcon /></ListItemIcon>
         <ListItemText primary="Mood" />
       </ListItem>
       <ListItem button>
         <ListItemIcon><TimerIcon /></ListItemIcon>
         <ListItemText primary="Pomodoro" />
+      </ListItem>
+      <ListItem button>
+        <ListItemIcon><BarChartIcon /></ListItemIcon>
+        <ListItemText primary="Weight" />
+      </ListItem>
+      <ListItem button>
+        <ListItemIcon><MoneyIcon /></ListItemIcon>
+        <ListItemText primary="Finances" />
       </ListItem>
     </List>
   </React.Fragment>
