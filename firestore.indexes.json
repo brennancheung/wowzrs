@@ -1,0 +1,32 @@
+{
+  "indexes": [
+    {
+      "collectionId": "goals",
+      "state": "READY",
+      "fields": [
+        {
+          "fieldPath": "due",
+          "mode": "DESCENDING"
+        },
+        {
+          "fieldPath": "created",
+          "mode": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "goals",
+      "state": "READY",
+      "fields": [
+        {
+          "fieldPath": "due",
+          "mode": "ASCENDING"
+        },
+        {
+          "fieldPath": "created",
+          "mode": "ASCENDING"
+        }
+      ]
+    }
+  ]
+}
