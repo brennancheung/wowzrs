@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withAppContext } from 'core/AppContext'
-import { compose } from 'ramda'
 
 const buildOrder = (ref, orderBy) => {
   if (!orderBy) { return ref }
@@ -15,7 +14,7 @@ const buildWhere = (ref, where) => {
   return ref.where(...where)
 }
 
-class FSQuery extends React.Component {
+class FSQueryBase extends React.Component {
   state = { data: null }
 
   async componentDidMount () {
@@ -39,7 +38,7 @@ class FSQuery extends React.Component {
         : snapshot.docs.map(x => ({ id: x.id, ...x.data() }))
       return this.setState({
         db,
-        ref,
+        fsRef: ref, // React has reserved ref already
         data,
         userId,
         isCollection,
@@ -59,6 +58,8 @@ class FSQuery extends React.Component {
   }
 }
 
+const FSQuery = withAppContext(FSQueryBase)
+
 const orderByPropType = PropTypes.arrayOf(PropTypes.string.isRequired)
 
 FSQuery.propTypes = {
@@ -67,11 +68,14 @@ FSQuery.propTypes = {
   where: PropTypes.array, // ['field', '==', value]
   /**
    * Children is a renderProp that can receive the following:
-   *   { db, ref, data, userId, isCollection, isDoc }
+   *   { db, fsRef, data, userId, isCollection, isDoc }
    */
   children: PropTypes.func.isRequired,
 }
 
-export default compose(
-  withAppContext,
-)(FSQuery)
+export const withFSQuery = ({ path, orderBy, where }) => Component => props =>
+  <FSQuery path={path} orderBy={orderBy} where={where}>
+    {childProps => <Component {...childProps} {...props} />}
+  </FSQuery>
+
+export default FSQuery
