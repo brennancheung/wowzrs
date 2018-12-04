@@ -21,7 +21,7 @@ class EnterTextField extends React.Component {
   }
 
   render () {
-    const { label, onEnter, ...rest } = this.props
+    const { label, onChange, onEnter, ...rest } = this.props
 
     return (
       <TextField
@@ -38,6 +38,7 @@ class EnterTextField extends React.Component {
 
 EnterTextField.propTypes = {
   label: PropTypes.string,
+  onChange: PropTypes.func,
   onEnter: PropTypes.func,
 }
 

@@ -13,6 +13,7 @@ import {
   TableCell,
   TableRow,
 } from '@material-ui/core'
+import EditGoalRow from './EditGoalRow'
 
 const sortGoals = goals => {
   const [ done, active ] = partition(prop('done'), goals)
@@ -20,7 +21,7 @@ const sortGoals = goals => {
   const activeSorted = active.sort((a, b) =>
     a.due === b.due
       ? a.created > b.created ? -1 : 1
-      : a.due > b.due ? -1 : 1
+      : a.due < b.due ? -1 : 1
   )
   return [...activeSorted, ...doneSorted]
 }
@@ -46,13 +47,6 @@ class GoalsForToday extends React.Component {
     this.setState({ editing: this.state.editing ? null : id })
   }
 
-  handleToggle = id => state => {
-    this.props.fsRef.doc(id).update({
-      done: state,
-      completed: state ? moment().valueOf() : null,
-    })
-  }
-
   handleArchive = () => {
     const { fsRef, data } = this.props
     const startOfToday = moment().startOf('day').valueOf()
@@ -60,9 +54,25 @@ class GoalsForToday extends React.Component {
     oldDone.forEach(x => fsRef.doc(x.id).update({ archived: true }))
   }
 
+  handleDelete = id => () => {
+    this.props.fsRef.doc(id).delete()
+    this.setState({ editing: null })
+  }
+
   handleMigrate = () => {
     const { data, fsRef } = this.props
     data.forEach(x => !x.archived && fsRef.doc(x.id).update({ archived: false }))
+  }
+
+  handleToggle = id => state => {
+    this.props.fsRef.doc(id).update({
+      done: state,
+      completed: state ? moment().valueOf() : null,
+    })
+  }
+
+  handleUpdate = id => newData => {
+    this.props.fsRef.doc(id).update(newData)
   }
 
   renderEditGoal = goal => (
@@ -83,12 +93,25 @@ class GoalsForToday extends React.Component {
     </TableRow>
   )
 
-  renderRow = goal => this.state.editing === goal.id
-    ? this.renderEditGoal(goal)
-    : this.renderGoalRow(goal)
+  renderRow = goal => {
+    if (this.state.editing === goal.id) {
+      return (
+        <EditGoalRow
+          key={goal.id}
+          goal={goal}
+          colSpan={columns.length}
+          onClose={this.toggleEdit(goal.id)}
+          onUpdate={this.handleUpdate(goal.id)}
+          onDelete={this.handleDelete(goal.id)}
+        />
+      )
+    }
+    return this.renderGoalRow(goal)
+  }
 
   render () {
-    const sorted = sortGoals(this.props.data)
+    const onlyToday = this.props.data.filter(goal => goal.due <= moment().endOf('day').valueOf())
+    const sorted = sortGoals(onlyToday)
 
     return (
       <Section title="Goals for today">
