@@ -51,7 +51,7 @@ export function startServer (config = defaultConfig) {
     app.get('/favicon.ico', (req, res) => res.status(204))
 
     app.all('*', (req, res) => {
-      res.write(webpackDevMiddleware.fileSystem.readFileSync(path.join(__dirname, '..', '..', 'build', 'index.html')))
+      res.write(webpackDevMiddleware.fileSystem.readFileSync(path.join(__dirname, '..', 'build', 'index.html')))
       res.end()
     })
 

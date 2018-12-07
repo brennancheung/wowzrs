@@ -37,17 +37,18 @@ class FSQueryBase extends React.Component {
         ? snapshot.data()
         : snapshot.docs.map(x => ({ id: x.id, ...x.data() }))
       return this.setState({
+        context,
+        data,
         db,
         fsRef: ref, // React has reserved ref already
-        data,
-        userId,
         isCollection,
         isDoc,
+        userId,
       })
     })
   }
 
-  componentwillUnmount () {
+  componentWillUnmount () {
     this.unsubscribe()
   }
 

@@ -1,13 +1,13 @@
 import React from 'react'
-import AddGoal from './AddGoal'
-import GoalsForToday from './GoalsForToday'
+import AddAction from 'components/actions/AddAction'
+import ActionsForToday from 'components/actions/ActionsForToday'
 import { withAppContext } from 'core/AppContext'
 import { compose } from 'ramda'
 
 const Home = ({ context }) => (
   <div>
-    <AddGoal />
-    <GoalsForToday />
+    <AddAction />
+    <ActionsForToday />
   </div>
 )
 

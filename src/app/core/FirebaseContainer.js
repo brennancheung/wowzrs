@@ -24,6 +24,18 @@ class FirebaseContainer extends React.Component {
     this.setState({ initializing: false })
   }
 
+  handleSignIn = () => {
+    const { firebase } = this.props.context
+    const provider = new firebase.auth.GoogleAuthProvider()
+    firebase.auth().signInWithPopup(provider)
+  }
+
+  handleSignOut = () => {
+    const { firebase } = this.props.context
+    firebase.auth().signOut()
+    this.props.setContext({ user: null })
+  }
+
   componentDidMount () {
     if (!firebase.apps.length) {
       firebase.initializeApp(fbConfig)
@@ -33,7 +45,12 @@ class FirebaseContainer extends React.Component {
     db.settings({
       timestampsInSnapshots: true
     })
-    this.props.setContext({ firebase, db })
+    this.props.setContext({
+      db,
+      firebase,
+      handleSignIn: this.handleSignIn,
+      handleSignOut: this.handleSignOut,
+    })
   }
 
   render () {

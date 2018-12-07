@@ -8,15 +8,15 @@ import ButtonGroup from 'core/common/ButtonGroup'
 import ArchiveIcon from '@material-ui/icons/Archive'
 import ChangeHistoryIcon from '@material-ui/icons/ChangeHistory'
 import IconButton from 'core/common/IconButton'
-import { partition, prop } from 'ramda'
+import { path, partition, prop } from 'ramda'
 import {
   TableCell,
   TableRow,
 } from '@material-ui/core'
-import EditGoalRow from './EditGoalRow'
+import EditActionRow from './EditActionRow'
 
-const sortGoals = goals => {
-  const [ done, active ] = partition(prop('done'), goals)
+const sortActions = actions => {
+  const [ done, active ] = partition(prop('done'), actions)
   const doneSorted = done.sort((a, b) => a.completed > b.completed ? -1 : 1)
   const activeSorted = active.sort((a, b) =>
     a.due === b.due
@@ -27,9 +27,9 @@ const sortGoals = goals => {
 }
 
 const columns = [
-  { id: 'done', label: 'Completed?' },
+  { id: 'done', label: 'Done?' },
   { id: 'title', label: 'Title' },
-  { id: 'due', label: 'Due on' },
+  { id: 'due', label: 'Due' },
   { id: 'created', label: 'Created' },
   { id: 'completed', label: 'Completed' },
 ]
@@ -38,9 +38,9 @@ const maybeStriked = (striked, children) => striked
   ? <span style={{ textDecoration: 'line-through', color: '#888' }}>{children}</span>
   : children
 
-class GoalsForToday extends React.Component {
+class ActionsForToday extends React.Component {
   state = {
-    editing: null // id of goal currently being edited
+    editing: null // id of action currently being edited
   }
 
   toggleEdit = id => e => {
@@ -59,9 +59,19 @@ class GoalsForToday extends React.Component {
     this.setState({ editing: null })
   }
 
-  handleMigrate = () => {
-    const { data, fsRef } = this.props
+  handleMigrate = async () => {
+    const { context, data, db, fsRef } = this.props
     data.forEach(x => !x.archived && fsRef.doc(x.id).update({ archived: false }))
+    const userId = path(['user', 'uid'], context)
+    console.log(userId)
+    if (!userId) { return }
+    const goalsRef = db.collection(`/users/${userId}/goals`)
+    const actionsRef = db.collection(`/users/${userId}/actions`)
+    const goalsSnapshot = await goalsRef.get()
+    goalsSnapshot.forEach(doc => {
+      console.log(doc.id, ' => ', doc.data())
+      actionsRef.doc(doc.id).set(doc.data())
+    })
   }
 
   handleToggle = id => state => {
@@ -75,46 +85,46 @@ class GoalsForToday extends React.Component {
     this.props.fsRef.doc(id).update(newData)
   }
 
-  renderEditGoal = goal => (
-    <TableRow key={goal.id} hover onClick={this.toggleEdit(goal.id)}>
+  renderEditAction = action => (
+    <TableRow key={action.id} hover onClick={this.toggleEdit(action.id)}>
       <TableCell colSpan={columns.length}>
-        <h1>Edit the goal</h1>
+        <h1>Edit the action</h1>
       </TableCell>
     </TableRow>
   )
 
-  renderGoalRow = goal => (
-    <TableRow key={goal.id} hover onClick={this.toggleEdit(goal.id)}>
-      <TableCell><Checkbox checked={goal.done} onChange={this.handleToggle(goal.id)} /></TableCell>
-      <TableCell>{maybeStriked(goal.done, goal.title)}</TableCell>
-      <TableCell>{!goal.completed && moment(goal.due).fromNow()}</TableCell>
-      <TableCell>{moment(goal.created).fromNow()}</TableCell>
-      <TableCell>{goal.completed && moment(goal.completed).fromNow()}</TableCell>
+  renderActionRow = action => (
+    <TableRow key={action.id} hover onClick={this.toggleEdit(action.id)}>
+      <TableCell><Checkbox checked={action.done} onChange={this.handleToggle(action.id)} /></TableCell>
+      <TableCell>{maybeStriked(action.done, action.title)}</TableCell>
+      <TableCell>{!action.completed && moment(action.due).fromNow()}</TableCell>
+      <TableCell>{moment(action.created).fromNow()}</TableCell>
+      <TableCell>{action.completed && moment(action.completed).fromNow()}</TableCell>
     </TableRow>
   )
 
-  renderRow = goal => {
-    if (this.state.editing === goal.id) {
+  renderRow = action => {
+    if (this.state.editing === action.id) {
       return (
-        <EditGoalRow
-          key={goal.id}
-          goal={goal}
+        <EditActionRow
+          key={action.id}
+          action={action}
           colSpan={columns.length}
-          onClose={this.toggleEdit(goal.id)}
-          onUpdate={this.handleUpdate(goal.id)}
-          onDelete={this.handleDelete(goal.id)}
+          onClose={this.toggleEdit(action.id)}
+          onUpdate={this.handleUpdate(action.id)}
+          onDelete={this.handleDelete(action.id)}
         />
       )
     }
-    return this.renderGoalRow(goal)
+    return this.renderActionRow(action)
   }
 
   render () {
-    const onlyToday = this.props.data.filter(goal => goal.due <= moment().endOf('day').valueOf())
-    const sorted = sortGoals(onlyToday)
+    const onlyToday = this.props.data.filter(action => action.due <= moment().endOf('day').valueOf())
+    const sorted = sortActions(onlyToday)
 
     return (
-      <Section title="Goals for today">
+      <Section title="Actions for today">
         <ButtonGroup>
           <IconButton Icon={ArchiveIcon} onClick={this.handleArchive}>archive old completed</IconButton>
           <IconButton Icon={ChangeHistoryIcon} onClick={this.handleMigrate}>migrate</IconButton>
@@ -126,6 +136,6 @@ class GoalsForToday extends React.Component {
 }
 
 export default withFSQuery({
-  path: '/users/$userId/goals',
+  path: '/users/$userId/actions',
   where: ['archived', '==', false]
-})(GoalsForToday)
+})(ActionsForToday)

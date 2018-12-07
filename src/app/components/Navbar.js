@@ -112,20 +112,9 @@ class Navbar extends React.Component {
   handleDrawerOpen = () => { this.setState({ open: true }) }
   handleDrawerClose = () => { this.setState({ open: false }) }
 
-  handleSignIn = () => {
-    const { firebase } = this.props.context
-    const provider = new firebase.auth.GoogleAuthProvider()
-    firebase.auth().signInWithPopup(provider)
-  }
-
-  handleSignOut = () => {
-    const { firebase } = this.props.context
-    firebase.auth().signOut()
-    this.props.setContext({ user: null })
-  }
-
   renderUser = () => {
-    const { context: { user }, classes } = this.props
+    const { classes, context } = this.props
+    const { handleSignOut, user } = context
     return (
       <div className={classes.navRightItems}>
         <IconButton color="inherit">
@@ -134,7 +123,7 @@ class Navbar extends React.Component {
           </Badge>
         </IconButton>
         <div>
-          <Button color="inherit" onClick={this.handleSignOut}>
+          <Button color="inherit" onClick={handleSignOut}>
             <Avatar alt={user.displayName} src={user.photoURL} className={classes.avatar} />
           </Button>
         </div>
@@ -145,7 +134,7 @@ class Navbar extends React.Component {
   render () {
     const { classes } = this.props
     const { open } = this.state
-    const { user } = this.props.context
+    const { handleSignIn, user } = this.props.context
     return (
       <React.Fragment>
         <CssBaseline />
@@ -164,7 +153,7 @@ class Navbar extends React.Component {
                 Wowzrs Personal Management System
               </Typography>
               {user && this.renderUser()}
-              {!user && <Button color="inherit" onClick={this.handleSignIn}>Sign in</Button>}
+              {!user && <Button color="inherit" onClick={handleSignIn}>Sign in</Button>}
             </Toolbar>
           </AppBar>
           <Drawer

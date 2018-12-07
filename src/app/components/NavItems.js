@@ -1,16 +1,8 @@
 import React from 'react'
-import {
-  Badge,
-  // Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  // ListSubheader,
-} from '@material-ui/core'
+import { Badge, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import {
   Assessment as AssessmentIcon,
-  Assignment as AssignmentIcon,
+  MyLocation as MyLocationIcon,
   BarChart as BarChartIcon,
   Dashboard as DashboardIcon,
   List as ListIcon,
@@ -18,47 +10,51 @@ import {
   Timer as TimerIcon,
   AttachMoney as MoneyIcon,
 } from '@material-ui/icons'
+import { withRouter } from 'react-router-dom'
 
-const NavItems = () => (
-  <React.Fragment>
-    <List>
-      <ListItem button>
-        <Badge badgeContent={2} color="secondary">
-          <ListItemIcon><DashboardIcon /></ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </Badge>
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><ListIcon /></ListItemIcon>
-        <ListItemText primary="Actions" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><AssignmentIcon /></ListItemIcon>
-        <ListItemText primary="Goals" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><AssessmentIcon /></ListItemIcon>
-        <ListItemText primary="Reports" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><MoodIcon /></ListItemIcon>
-        <ListItemText primary="Mood" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><TimerIcon /></ListItemIcon>
-        <ListItemText primary="Pomodoro" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><BarChartIcon /></ListItemIcon>
-        <ListItemText primary="Weight" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon><MoneyIcon /></ListItemIcon>
-        <ListItemText primary="Finances" />
-      </ListItem>
-    </List>
-  </React.Fragment>
+const NavItems = ({ history }) => {
+  const navTo = link => () => { history.push(link) }
 
-)
+  return (
+    <React.Fragment>
+      <List>
+        <ListItem button onClick={navTo('/')}>
+          <Badge badgeContent={2} color="secondary">
+            <ListItemIcon><DashboardIcon /></ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </Badge>
+        </ListItem>
+        <ListItem button onClick={navTo('/actions')}>
+          <ListItemIcon><ListIcon /></ListItemIcon>
+          <ListItemText primary="Actions" />
+        </ListItem>
+        <ListItem button onClick={navTo('/goals')}>
+          <ListItemIcon><MyLocationIcon /></ListItemIcon>
+          <ListItemText primary="Goals" />
+        </ListItem>
+        <ListItem button onClick={navTo('/reports')}>
+          <ListItemIcon><AssessmentIcon /></ListItemIcon>
+          <ListItemText primary="Reports" />
+        </ListItem>
+        <ListItem button onClick={navTo('/mood')}>
+          <ListItemIcon><MoodIcon /></ListItemIcon>
+          <ListItemText primary="Mood" />
+        </ListItem>
+        <ListItem button onClick={navTo('/pomodoro')}>
+          <ListItemIcon><TimerIcon /></ListItemIcon>
+          <ListItemText primary="Pomodoro" />
+        </ListItem>
+        <ListItem button onClick={navTo('/weight')}>
+          <ListItemIcon><BarChartIcon /></ListItemIcon>
+          <ListItemText primary="Weight" />
+        </ListItem>
+        <ListItem button onClick={navTo('/finances')}>
+          <ListItemIcon><MoneyIcon /></ListItemIcon>
+          <ListItemText primary="Finances" />
+        </ListItem>
+      </List>
+    </React.Fragment>
+  )
+}
 
-export default NavItems
+export default withRouter(NavItems)

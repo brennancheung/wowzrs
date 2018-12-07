@@ -4,10 +4,10 @@ import EnterTextField from 'core/common/EnterTextField'
 import FSCollection from 'core/FSCollection'
 import Section from 'core/common/Section'
 
-const AddGoal = () => (
-  <FSCollection path="/users/$userId/goals">
+const AddAction = () => (
+  <FSCollection path="/users/$userId/actions">
     {({ collection }) => {
-      const createGoal = async title => {
+      const createAction = async title => {
         const due = moment().endOf('day').valueOf()
         const created = moment().valueOf()
         const data = { title, created, due, done: false, archived: false }
@@ -16,8 +16,8 @@ const AddGoal = () => (
       return (
         <Section>
           <EnterTextField
-            label="new goal"
-            onEnter={createGoal}
+            label="new action"
+            onEnter={createAction}
             fullWidth
           />
         </Section>
@@ -26,4 +26,4 @@ const AddGoal = () => (
   </FSCollection>
 )
 
-export default AddGoal
+export default AddAction

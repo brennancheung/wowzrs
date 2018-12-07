@@ -1,15 +1,12 @@
 import React from 'react'
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core'
 import AppContext from 'core/AppContext'
 import FirebaseContainer from 'core/FirebaseContainer'
-import Home from 'components/Home'
-import Navbar from 'components/Navbar'
+import Main from './Main'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core'
 import './app.css'
 
-const initialContext = {
-  foo: 'bar'
-}
+const initialContext = {}
 
 const themeOptions = {
   typography: {
@@ -25,16 +22,9 @@ class App extends React.Component {
       <Router>
         <MuiThemeProvider theme={theme}>
           <AppContext initialContext={initialContext}>
-            <div id="main-container">
-              <FirebaseContainer>
-                <Navbar>
-                  <Switch>
-                    <Route path="/" exact component={Home} />
-                    <Redirect to="/" />
-                  </Switch>
-                </Navbar>
-              </FirebaseContainer>
-            </div>
+            <FirebaseContainer>
+              <Main />
+            </FirebaseContainer>
           </AppContext>
         </MuiThemeProvider>
       </Router>
