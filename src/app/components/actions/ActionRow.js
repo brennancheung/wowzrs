@@ -3,12 +3,14 @@ import Checkbox from 'core/common/Checkbox'
 import EditActionRow from './EditActionRow'
 import moment from 'moment'
 import { TableCell, TableRow } from '@material-ui/core'
+import columns from './actionColumns'
+import { withFSRef } from 'core/FSQuery'
 
 const maybeStriked = (striked, children) => striked
   ? <span style={{ textDecoration: 'line-through', color: '#888' }}>{children}</span>
   : children
 
-class ActionRow extends React.Component {
+class BaseActionRow extends React.Component {
   state = { editing: false }
 
   toggleEdit = () => {
@@ -32,7 +34,7 @@ class ActionRow extends React.Component {
   }
 
   render () {
-    const { columns, action } = this.props
+    const { action } = this.props
 
     if (this.state.editing) {
       return (
@@ -60,5 +62,9 @@ class ActionRow extends React.Component {
     )
   }
 }
+
+const ActionRow = withFSRef('/users/$userId/actions')(BaseActionRow)
+
+export const renderActionRow = action => <ActionRow key={action.id} action={action} />
 
 export default ActionRow

@@ -14,6 +14,28 @@ const buildWhere = (ref, where) => {
   return ref.where(...where)
 }
 
+export const withFSRef = path => Component => props => {
+  const FSRef = withAppContext(
+    ({ context }) => {
+      const { db, user } = context
+      const userId = (user && user.uid) || ''
+      const finalPath = path.replace('$userId', userId)
+      const ref = db.collection(finalPath)
+      return (
+        <Component
+          context={context}
+          db={db}
+          fsRef={ref}
+          path={finalPath}
+          userId={userId}
+          {...props}
+        />
+      )
+    }
+  )
+  return <FSRef />
+}
+
 class FSQueryBase extends React.Component {
   state = { data: null }
 
@@ -22,7 +44,6 @@ class FSQueryBase extends React.Component {
     const { db, user } = context
 
     const userId = (user && user.uid) || ''
-    if (userId) { this.setState({ userId }) }
 
     const finalPath = path.replace('$userId', userId)
     const ref = db.collection(finalPath)
@@ -43,7 +64,7 @@ class FSQueryBase extends React.Component {
         fsRef: ref, // React has reserved ref already
         isCollection,
         isDoc,
-        userId,
+        userId: userId || null,
       })
     })
   }

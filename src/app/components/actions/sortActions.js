@@ -5,7 +5,9 @@ const isFutureDay = x => x.due > moment().endOf('day').valueOf()
 
 const sortActions = (actions, toggles) => {
   const [ done, active ] = partition(prop('done'), actions)
-  const doneSorted = done.sort((a, b) => a.completed > b.completed ? -1 : 1)
+  const doneSorted = toggles.includes('done')
+    ? done.sort((a, b) => a.completed > b.completed ? -1 : 1)
+    : []
   const activeSorted = active.sort((a, b) =>
     a.due === b.due
       ? a.created > b.created ? -1 : 1
