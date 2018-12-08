@@ -1,25 +1,26 @@
-import { partition, prop } from 'ramda'
+import { ascend, contains, descend, juxt, map, partition, prop, sortWith } from 'ramda'
 import moment from 'moment'
+
+const DESC = key => descend(prop(key))
+const ASC = key => ascend(prop(key))
 
 const isFutureDay = x => x.due > moment().endOf('day').valueOf()
 
 const sortActions = (actions, toggles) => {
+  const [ showDone, showToday, showArchived ] = juxt(map(contains, ['done', 'today', 'archived']))(toggles)
+
   const [ done, active ] = partition(prop('done'), actions)
-  const doneSorted = toggles.includes('done')
-    ? done.sort((a, b) => a.completed > b.completed ? -1 : 1)
-    : []
-  const activeSorted = active.sort((a, b) =>
-    a.due === b.due
-      ? a.created > b.created ? -1 : 1
-      : a.due < b.due ? -1 : 1
-  )
-  const [futureActions, dueToday] = partition(isFutureDay, activeSorted)
+  const doneSorted = showDone ? sortWith([DESC('completed')], done) : []
   const [archived, unarchived] = partition(prop('archived'), doneSorted)
+
+  const activeSorted = sortWith([DESC('created'), ASC('due')], active)
+  const [dueLater, dueToday] = partition(isFutureDay, activeSorted)
+
   return [
     ...dueToday,
-    ...(toggles.includes('today') ? [] : futureActions),
+    ...showToday ? [] : dueLater,
     ...unarchived,
-    ...(toggles.includes('archived') ? archived : [])
+    ...showArchived ? archived : []
   ]
 }
 
