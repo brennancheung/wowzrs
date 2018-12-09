@@ -13,7 +13,7 @@ const sortActions = (actions, toggles) => {
   const doneSorted = showDone ? sortWith([DESC('completed')], done) : []
   const [archived, unarchived] = partition(prop('archived'), doneSorted)
 
-  const activeSorted = sortWith([DESC('created'), ASC('due')], active)
+  const activeSorted = sortWith([ASC('due'), DESC('created')], active)
   const [dueLater, dueToday] = partition(isFutureDay, activeSorted)
 
   return [

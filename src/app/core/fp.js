@@ -1,20 +1,10 @@
 // functional programming helpers
+import { curry } from 'ramda'
 
-export const pluck = key => obj => obj[key]
-export const identity = x => x
 export const isTruthy = x => !!x
 export const exists = x => x !== undefined
 
 export const pluckAsync = key => promise => promise.then(obj => obj[key])
-
-export const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)))
-export const pipe = (...fns) => compose(...fns.reverse())
-export const pick = key => obj => obj[key]
-
-// Transparently inject side-effects in a functional composition "chain".
-// Ex: const value = await somePromise.then(tap(x => console.log))
-// Ex: compose(fn1, fn2, fn3, tap(log), fn4)(value)
-export const tap = fn => arg => { fn(arg); return arg }
 
 export const mergeKey = (srcObj, destObj = {}, key) => {
   const clonedObj = { ...destObj }
@@ -91,3 +81,8 @@ export const asyncFlatMap = async (arr, callback) => {
   }
   return newArr
 }
+
+export const positive = n => n > 0
+export const isZero = n => n === 0
+
+export const dropIf = curry((cond, [head, ...tail]) => cond ? tail : [head, ...tail])

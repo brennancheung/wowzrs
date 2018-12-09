@@ -8,10 +8,15 @@ import { compose } from 'ramda'
 
 import { Grid } from '@material-ui/core'
 
-import columns from './actionColumns'
+const columns = [
+  { id: 'done', label: 'Done?' },
+  { id: 'title', label: 'Title' },
+  { id: 'due', label: 'Due' },
+  { id: 'duration', label: 'Duration' },
+]
 
 const ActionsForToday = ({ data }) => {
-  const sortedData = sortActions(data, ['today'])
+  const sortedData = sortActions(data, ['today', 'done'])
 
   return (
     <Section title="Actions for today">
@@ -19,7 +24,7 @@ const ActionsForToday = ({ data }) => {
         <Grid item xs={6} />
         <Grid item xs={6} />
       </Grid>
-      <ListTable columns={columns} data={sortedData} renderRow={renderActionRow} />
+      <ListTable columns={columns} data={sortedData} renderRow={renderActionRow(columns)} />
     </Section>
   )
 }

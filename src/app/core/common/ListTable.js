@@ -11,10 +11,27 @@ import {
 } from '@material-ui/core'
 
 const uniqueIdentifier = 'id'
+
 class Table extends React.Component {
+  state = { editingId: null }
+
+  onToggleEdit = id => () => {
+    const { editingId } = this.state
+    this.setState({
+      editingId: editingId ? null : id
+    })
+  }
+
   renderRow = row => {
-    if (this.props.renderRow) {
-      return this.props.renderRow(row)
+    const { renderRow } = this.props
+    if (renderRow) {
+      const id = row[uniqueIdentifier]
+      const editing = this.state.editingId === id
+      return renderRow({
+        row,
+        editing,
+        onToggleEdit: this.onToggleEdit(id)
+      })
     }
     const { columns } = this.props
     return (

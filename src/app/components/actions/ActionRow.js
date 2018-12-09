@@ -1,9 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Checkbox from 'core/common/Checkbox'
+import Duration from 'core/common/Duration'
 import EditActionRow from './EditActionRow'
 import moment from 'moment'
 import { TableCell, TableRow } from '@material-ui/core'
-import columns from './actionColumns'
 import { withFSRef } from 'core/FSQuery'
 
 const maybeStriked = (striked, children) => striked
@@ -11,15 +12,9 @@ const maybeStriked = (striked, children) => striked
   : children
 
 class BaseActionRow extends React.Component {
-  state = { editing: false }
-
-  toggleEdit = () => {
-    this.setState(state => ({ editing: !state.editing }))
-  }
-
   handleDelete = id => () => {
     this.props.fsRef.doc(id).delete()
-    this.setState({ editing: null })
+    this.props.onToggleEdit()
   }
 
   handleToggle = id => state => {
@@ -34,30 +29,33 @@ class BaseActionRow extends React.Component {
   }
 
   render () {
-    const { action } = this.props
+    const { action, columns, editing, onToggleEdit } = this.props
 
-    if (this.state.editing) {
+    if (editing) {
       return (
         <EditActionRow
           key={action.id}
           action={action}
-          colSpan={columns.length}
-          onClose={this.toggleEdit}
+          columns={columns}
+          onClose={onToggleEdit}
           onUpdate={this.handleUpdate(action.id)}
           onDelete={this.handleDelete(action.id)}
         />
       )
     }
 
+    const columnRenderers = {
+      done: () => !action.archived && <Checkbox checked={action.done} onChange={this.handleToggle(action.id)} />,
+      title: () => maybeStriked(action.done, action.title),
+      due: () => !action.completed && moment(action.due).fromNow(),
+      duration: () => action.duration && <Duration ms={action.duration} small />,
+      created: () => moment(action.created).fromNow(),
+      completed: () => action.completed && moment(action.completed).fromNow(),
+    }
+
     return (
-      <TableRow key={action.id} hover onClick={this.toggleEdit}>
-        <TableCell>
-          {!action.archived && <Checkbox checked={action.done} onChange={this.handleToggle(action.id)} />}
-        </TableCell>
-        <TableCell>{maybeStriked(action.done, action.title)}</TableCell>
-        <TableCell>{!action.completed && moment(action.due).fromNow()}</TableCell>
-        <TableCell>{moment(action.created).fromNow()}</TableCell>
-        <TableCell>{action.completed && moment(action.completed).fromNow()}</TableCell>
+      <TableRow key={action.id} hover onClick={onToggleEdit}>
+        {columns.map(c => <TableCell key={c.id}>{columnRenderers[c.id]()}</TableCell>)}
       </TableRow>
     )
   }
@@ -65,6 +63,18 @@ class BaseActionRow extends React.Component {
 
 const ActionRow = withFSRef('/users/$userId/actions')(BaseActionRow)
 
-export const renderActionRow = action => <ActionRow key={action.id} action={action} />
+ActionRow.propTypes = {
+  onToggleEdit: PropTypes.func.isRequired,
+  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+}
+
+export const renderActionRow = columns => ({ row, ...props }) => (
+  <ActionRow
+    key={row.id}
+    action={row}
+    columns={columns}
+    {...props}
+  />
+)
 
 export default ActionRow

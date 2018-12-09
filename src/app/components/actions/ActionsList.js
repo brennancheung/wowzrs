@@ -13,7 +13,14 @@ import MigrateActionsButton from './MigrateActionsButton'
 
 import { Grid } from '@material-ui/core'
 
-import columns from './actionColumns'
+const columns = [
+  { id: 'done', label: 'Done?' },
+  { id: 'title', label: 'Title' },
+  { id: 'due', label: 'Due' },
+  { id: 'duration', label: 'Duration' },
+  { id: 'created', label: 'Created' },
+  { id: 'completed', label: 'Completed' },
+]
 
 class ActionsList extends React.Component {
   state = {
@@ -44,7 +51,7 @@ class ActionsList extends React.Component {
                   </ButtonGroup>
                 </Grid>
               </Grid>
-              <ListTable columns={columns} data={sortedData} renderRow={renderActionRow} />
+              <ListTable columns={columns} data={sortedData} renderRow={renderActionRow(columns)} />
             </Section>
           )
         }}
