@@ -1,5 +1,11 @@
 // functional programming helpers
-import { curry } from 'ramda'
+import { ascend, curry, descend, prop, sortWith } from 'ramda'
+
+export const ASC = key => ascend(prop(key))
+export const DESC = key => descend(prop(key))
+
+export const sortAsc = curry((key, data) => sortWith([ASC(key)], data))
+export const sortDesc = curry((key, data) => sortWith([DESC(key)], data))
 
 export const isTruthy = x => !!x
 export const exists = x => x !== undefined

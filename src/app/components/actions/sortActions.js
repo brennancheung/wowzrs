@@ -1,8 +1,6 @@
-import { ascend, contains, descend, juxt, map, partition, prop, sortWith } from 'ramda'
+import { contains, juxt, map, partition, prop, sortWith } from 'ramda'
+import { ASC, DESC } from 'core/fp'
 import moment from 'moment'
-
-const DESC = key => descend(prop(key))
-const ASC = key => ascend(prop(key))
 
 const isFutureDay = x => x.due > moment().endOf('day').valueOf()
 

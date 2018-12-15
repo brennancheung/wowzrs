@@ -3,6 +3,7 @@ import ActionsPage from 'components/pages/ActionsPage'
 import HomePage from 'components/pages/HomePage'
 import LoginPage from 'components/pages/LoginPage'
 import Navbar from 'components/Navbar'
+import WeightPage from 'components/pages/WeightPage'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { withAppContext } from 'core/AppContext'
 
@@ -10,7 +11,6 @@ const GoalsPage = () => <h1>Goals</h1>
 const ReportsPage = () => <h1>Reports</h1>
 const MoodPage = () => <h1>Mood</h1>
 const PomodoroPage = () => <h1>Pomodoro</h1>
-const WeightPage = () => <h1>Weight</h1>
 const FinancesPage = () => <h1>Finances</h1>
 
 const Main = ({ context }) => {

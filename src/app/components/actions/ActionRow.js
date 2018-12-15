@@ -12,16 +12,35 @@ const maybeStriked = (striked, children) => striked
   : children
 
 class BaseActionRow extends React.Component {
+  handleComplete = id => () => {
+    this.handleToggle(id)(true)
+    this.props.onToggleEdit()
+  }
+
   handleDelete = id => () => {
     this.props.fsRef.doc(id).delete()
     this.props.onToggleEdit()
   }
 
-  handleToggle = id => state => {
-    this.props.fsRef.doc(id).update({
-      done: state,
-      completed: state ? moment().valueOf() : null,
+  handleToggle = id => async done => {
+    const docRef = this.props.fsRef.doc(id)
+    docRef.update({
+      done,
+      completed: done ? moment().valueOf() : null,
     })
+    if (done) {
+      const snapshot = await docRef.get()
+      const data = snapshot.data()
+      if (data.started) {
+        const now = moment().valueOf()
+        const elapsed = now - data.started
+        const duration = (data.duration || 0) + elapsed
+        docRef.update({
+          started: null,
+          duration,
+        })
+      }
+    }
   }
 
   handleUpdate = id => newData => {
@@ -38,6 +57,7 @@ class BaseActionRow extends React.Component {
           action={action}
           columns={columns}
           onClose={onToggleEdit}
+          onComplete={this.handleComplete(action.id)}
           onUpdate={this.handleUpdate(action.id)}
           onDelete={this.handleDelete(action.id)}
         />

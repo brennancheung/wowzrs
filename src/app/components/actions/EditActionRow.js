@@ -2,30 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { omit, whereEq } from 'ramda'
-import { Delete, Pause, PlayArrow } from '@material-ui/icons'
+import { Delete, Pause, PlayArrow, Stop } from '@material-ui/icons'
 import IconButton from 'core/common/IconButton'
 import { withStyles } from '@material-ui/core/styles'
 import {
-  Button, ClickAwayListener,
+  ClickAwayListener,
   TableCell, TableRow, Typography,
 } from '@material-ui/core'
 import ButtonGroup from 'core/common/ButtonGroup'
 import Duration from 'core/common/Duration'
+import TimeButton from 'core/common/TimeButton'
 import EnterTextField from 'core/common/EnterTextField'
 
 const styles = {}
 
 const stopPropagation = e => e.stopPropagation()
-
-const TimeButton = ({ children, onTimeChange, step, unit, ...props }) => {
-  const handleClick = e => {
-    e.stopPropagation()
-    onTimeChange(step, unit)
-  }
-  return (
-    <Button variant="contained" onClick={handleClick}>{children}</Button>
-  )
-}
 
 class EditActionRow extends React.Component {
   state = { ...this.props.action }
@@ -48,6 +39,11 @@ class EditActionRow extends React.Component {
     onClose()
   }
 
+  handleComplete = async () => {
+    await this.handlePause()
+    this.props.onComplete()
+  }
+
   handleTimeChange = (step, unit) => {
     this.setState({
       due: moment(this.state.due).add(step, unit).valueOf()
@@ -63,17 +59,22 @@ class EditActionRow extends React.Component {
   }
 
   handlePause = () => {
-    const { elapsed, duration } = this.state
-    clearInterval(this.timerId)
-    this.timerId = null
-    const newDuration = (duration || 0) + elapsed
-    this.setState(
-      { started: null, elapsed: null, duration: newDuration },
-      this.handleUpdate
-    )
+    return new Promise(resolve => {
+      const { elapsed, duration } = this.state
+      clearInterval(this.timerId)
+      this.timerId = null
+      const newDuration = (duration || 0) + (elapsed || 0)
+      this.setState(
+        { started: null, elapsed: null, duration: newDuration },
+        () => {
+          this.handleUpdate()
+          resolve()
+        }
+      )
+    })
   }
 
-  handleTick = cb => {
+  handleTick = () => {
     const elapsed = this.calcElapsed()
     this.setState({ elapsed })
   }
@@ -126,7 +127,14 @@ class EditActionRow extends React.Component {
     const { due, title } = this.state
 
     const columnRenderers = {
-      done: () => <IconButton Icon={Delete} onClick={onDelete}>Delete</IconButton>,
+      done: () => (
+        <div>
+          <IconButton Icon={Delete} onClick={onDelete}>Delete</IconButton>
+          <br />
+          <br />
+          <IconButton Icon={Stop} onClick={this.handleComplete} stopPropagation>Complete</IconButton>
+        </div>
+      ),
       title: () => (
         <EnterTextField
           label="title"
@@ -155,11 +163,11 @@ class EditActionRow extends React.Component {
         </React.Fragment>
       ),
       duration: () => (
-        <React.Fragment>
+        <div>
           {this.renderDuration()}
           {this.renderStart()}
           {this.renderPause()}
-        </React.Fragment>
+        </div>
       ),
       created: () => moment(action.created).fromNow(),
       completed: () => action.completed && moment(action.completed).fromNow(),
@@ -179,6 +187,7 @@ EditActionRow.propTypes = {
   action: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   onClose: PropTypes.func.isRequired,
+  onComplete: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
 }
