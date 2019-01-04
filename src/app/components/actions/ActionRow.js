@@ -4,12 +4,18 @@ import Checkbox from 'core/common/Checkbox'
 import Duration from 'core/common/Duration'
 import EditActionRow from './EditActionRow'
 import moment from 'moment'
-import { TableCell, TableRow } from '@material-ui/core'
+import { TableCell, TableRow, Typography } from '@material-ui/core'
 import { withFSRef } from 'core/FSQuery'
 
 const maybeStriked = (striked, children) => striked
   ? <span style={{ textDecoration: 'line-through', color: '#888' }}>{children}</span>
   : children
+
+
+// Make it red if it is past due
+const isExpired = time => moment(time).valueOf() < moment().valueOf()
+const maybeUrgentText = (text, cond) => <Typography color={cond ? 'secondary' : 'default'}>{text}</Typography>
+const maybeUrgentTime = due => maybeUrgentText(moment(due).fromNow(), isExpired(due))
 
 class BaseActionRow extends React.Component {
   handleComplete = id => () => {
@@ -67,7 +73,7 @@ class BaseActionRow extends React.Component {
     const columnRenderers = {
       done: () => !action.archived && <Checkbox checked={action.done} onChange={this.handleToggle(action.id)} />,
       title: () => maybeStriked(action.done, action.title),
-      due: () => !action.completed && moment(action.due).fromNow(),
+      due: () => !action.completed && maybeUrgentTime(action.due),
       duration: () => action.duration && <Duration ms={action.duration} small />,
       created: () => moment(action.created).fromNow(),
       completed: () => action.completed && moment(action.completed).fromNow(),
