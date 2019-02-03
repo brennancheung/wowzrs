@@ -11,7 +11,6 @@ const maybeStriked = (striked, children) => striked
   ? <span style={{ textDecoration: 'line-through', color: '#888' }}>{children}</span>
   : children
 
-
 // Make it red if it is past due
 const isExpired = time => moment(time).valueOf() < moment().valueOf()
 const maybeUrgentText = (text, cond) => <Typography color={cond ? 'secondary' : 'default'}>{text}</Typography>

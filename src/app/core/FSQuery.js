@@ -75,7 +75,7 @@ class FSQueryBase extends React.Component {
 
   render () {
     const { data } = this.state
-    if (!data) { return <div>Loading...</div> }
+    if (data === undefined || data === null) { return <div>Loading...</div> }
     return this.props.children(this.state)
   }
 }

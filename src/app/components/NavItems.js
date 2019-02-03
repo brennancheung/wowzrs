@@ -25,12 +25,12 @@ const NavItems = ({ history }) => {
           </Badge>
         </ListItem>
         <ListItem button onClick={navTo('/actions')}>
-          <ListItemIcon><ListIcon /></ListItemIcon>
+          <ListItemIcon><MyLocationIcon /></ListItemIcon>
           <ListItemText primary="Actions" />
         </ListItem>
-        <ListItem button onClick={navTo('/goals')}>
-          <ListItemIcon><MyLocationIcon /></ListItemIcon>
-          <ListItemText primary="Goals" />
+        <ListItem button onClick={navTo('/tasks')}>
+          <ListItemIcon><ListIcon /></ListItemIcon>
+          <ListItemText primary="Tasks" />
         </ListItem>
         <ListItem button onClick={navTo('/reports')}>
           <ListItemIcon><AssessmentIcon /></ListItemIcon>

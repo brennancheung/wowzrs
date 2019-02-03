@@ -3,6 +3,7 @@ import ActionsPage from 'components/pages/ActionsPage'
 import HomePage from 'components/pages/HomePage'
 import LoginPage from 'components/pages/LoginPage'
 import Navbar from 'components/Navbar'
+import TasksPage from 'components/pages/TasksPage'
 import WeightPage from 'components/pages/WeightPage'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { withAppContext } from 'core/AppContext'
@@ -22,6 +23,7 @@ const Main = ({ context }) => {
         <Route path="/" exact component={HomePage} />
         <Route path="/actions" component={ActionsPage} />
         <Route path="/goals" component={GoalsPage} />
+        <Route path="/tasks" component={TasksPage} />
         <Route path="/reports" component={ReportsPage} />
         <Route path="/mood" component={MoodPage} />
         <Route path="/pomodoro" component={PomodoroPage} />
