@@ -3,18 +3,30 @@ import PropTypes from 'prop-types'
 import { withAppContext } from 'core/AppContext'
 import { compose } from 'ramda'
 
+export const interpolatePath = ({ context, path }) => {
+  const { user } = context
+  const userId = (user && user.uid) || ''
+  const finalPath = path.replace('$userId', userId)
+  return { userId, finalPath }
+}
+
+export const interpolateUserPath = ({ context, path }) =>
+  interpolatePath({ context, path: `/users/$userId${path}` })
+
+export const getCollection = ({ context, path }) => {
+  const { db } = context
+  const { userId, finalPath } = interpolatePath({ context, path })
+  const collection = db.collection(finalPath)
+  return { collection, userId }
+}
+
 class FSCollection extends React.Component {
   state = { data: null }
 
   async componentDidMount () {
     const { context, path } = this.props
-    const { db, user } = context
-
-    const userId = (user && user.uid) || ''
+    const { collection, userId } = getCollection({ context, path })
     if (userId) { this.setState({ userId }) }
-
-    const finalPath = path.replace('$userId', userId)
-    const collection = db.collection(finalPath)
     this.setState({ collection, userId })
   }
 
@@ -32,6 +44,32 @@ FSCollection.propTypes = {
    *   { collection, userId }
    */
   children: PropTypes.func.isRequired,
+}
+
+export const withUserCollections = paths => Component => props => {
+  const FSCollections = withAppContext(
+    ({ context }) => {
+      const { db } = context
+      const collections = Object.entries(paths).reduce(
+        (accum, [key, path]) => {
+          const userPath = interpolateUserPath({ context, path })
+          accum[key] = db.collection(userPath.finalPath)
+          return accum
+        },
+        {}
+      )
+      return (
+        <Component
+          context={context}
+          db={db}
+          collections={collections}
+          {...props}
+        />
+      )
+    }
+  )
+
+  return <FSCollections />
 }
 
 export default compose(

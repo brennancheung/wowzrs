@@ -1,6 +1,7 @@
 import React from 'react'
 import Section from 'core/common/Section'
 import { Button, Grid, List } from '@material-ui/core'
+import { createTimeJournal } from '../time/actions'
 import { sortAsc } from 'core/fp'
 import { withFSQuery } from 'core/FSQuery'
 import AddTask from '../tasks/AddTask'
@@ -27,6 +28,11 @@ class TasksPage extends React.Component {
     if (whichList === 'task1') {
       this.setState({ task2: null, task3: null })
     }
+  }
+
+  handleTimeTrack = task => () => {
+    const { context } = this.props
+    createTimeJournal({ context, task })
   }
 
   handleToggle = task => () => {
@@ -59,6 +65,7 @@ class TasksPage extends React.Component {
                   onArchive={this.handleArchive(task)}
                   onClick={this.handleSelectTask('task1', task.id)}
                   onDelete={this.handleDelete(task)}
+                  onTimeTrack={this.handleTimeTrack(task)}
                   onToggle={this.handleToggle(task)}
                 />
               )}
@@ -76,6 +83,7 @@ class TasksPage extends React.Component {
                   onArchive={this.handleArchive(task)}
                   onClick={this.handleSelectTask('task2', task.id)}
                   onDelete={this.handleDelete(task)}
+                  onTimeTrack={this.handleTimeTrack(task)}
                   onToggle={this.handleToggle(task)}
                 />
               )}
@@ -93,6 +101,7 @@ class TasksPage extends React.Component {
                   onArchive={this.handleArchive(task)}
                   onClick={this.handleSelectTask('task3', task.id)}
                   onDelete={this.handleDelete(task)}
+                  onTimeTrack={this.handleTimeTrack(task)}
                   onToggle={this.handleToggle(task)}
                 />
               )}

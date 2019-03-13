@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { interpolatePath } from 'core/FSCollection'
 import { withAppContext } from 'core/AppContext'
 
 const buildOrder = (ref, orderBy) => {
@@ -17,9 +18,8 @@ const buildWhere = (ref, where) => {
 export const withFSRef = path => Component => props => {
   const FSRef = withAppContext(
     ({ context }) => {
-      const { db, user } = context
-      const userId = (user && user.uid) || ''
-      const finalPath = path.replace('$userId', userId)
+      const { db } = context
+      const { userId, finalPath } = interpolatePath({ context, path })
       const ref = db.collection(finalPath)
       return (
         <Component
@@ -41,11 +41,9 @@ class FSQueryBase extends React.Component {
 
   async componentDidMount () {
     const { context, path, orderBy, where } = this.props
-    const { db, user } = context
+    const { db } = context
+    const { finalPath, userId } = interpolatePath({ context, path })
 
-    const userId = (user && user.uid) || ''
-
-    const finalPath = path.replace('$userId', userId)
     const ref = db.collection(finalPath)
     const withOrder = buildOrder(ref, orderBy)
     const withWhere = buildWhere(withOrder, where)

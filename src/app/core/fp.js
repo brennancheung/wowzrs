@@ -1,5 +1,5 @@
 // functional programming helpers
-import { ascend, curry, descend, prop, sortWith } from 'ramda'
+import { ascend, curry, descend, pathOr as _pathOr, prop, sortWith } from 'ramda'
 
 export const ASC = key => ascend(prop(key))
 export const DESC = key => descend(prop(key))
@@ -92,3 +92,8 @@ export const positive = n => n > 0
 export const isZero = n => n === 0
 
 export const dropIf = curry((cond, [head, ...tail]) => cond ? tail : [head, ...tail])
+
+export const pathOrNull = curry((path, obj) => {
+  const pathArr = path.split('.')
+  return _pathOr(null, pathArr, obj)
+})

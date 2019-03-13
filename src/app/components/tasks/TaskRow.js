@@ -7,13 +7,18 @@ const maybeStriked = (striked, children) => striked
   ? <span style={{ textDecoration: 'line-through', color: '#888' }}>{children}</span>
   : children
 
-const TaskRow = ({ active, onArchive, onClick, onDelete, onToggle, task, tasks }) => {
+const TaskRow = props => {
+  const {
+    active, task, tasks,
+    onArchive, onClick, onDelete, onTimeTrack, onToggle,
+  } = props
   const childTasks = tasks.filter(x => x.parentId === task.id)
   const numChildren = childTasks.length
   const numDone = childTasks.filter(x => x.done).length
   const actions = [
     { label: 'archive', action: onArchive },
     { label: 'delete', action: onDelete },
+    { label: 'track', action: onTimeTrack },
   ]
   return (
     <ListItem button dense selected={active} onClick={onClick}>

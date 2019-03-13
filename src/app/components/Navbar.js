@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import NavItems from 'components/NavItems'
+import TimeTrackerWidget from 'components/time/TimeTrackerWidget'
 import { compose } from 'ramda'
 import { withStyles } from '@material-ui/core/styles'
 import { withAppContext } from 'core/AppContext'
@@ -167,6 +168,7 @@ class Navbar extends React.Component {
               </IconButton>
             </div>
             <NavItems />
+            <TimeTrackerWidget />
           </Drawer>
           <main className={classes.content}>
             <div className={classes.appBarSpacer} />

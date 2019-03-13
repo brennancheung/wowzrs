@@ -22,12 +22,14 @@ class Table extends React.Component {
     })
   }
 
-  renderRow = row => {
-    const { renderRow } = this.props
+  renderRow = (row, idx) => {
+    const { data, renderRow } = this.props
     if (renderRow) {
       const id = row[uniqueIdentifier]
       const editing = this.state.editingId === id
       return renderRow({
+        data,
+        idx,
         row,
         editing,
         onToggleEdit: this.onToggleEdit(id)
@@ -72,7 +74,7 @@ class Table extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map(this.renderRow)}
+            {data.map((row, idx) => this.renderRow(row, idx))}
           </TableBody>
         </MDTable>
       </Paper>
