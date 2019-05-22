@@ -46,8 +46,8 @@ class TimeTrackerWidget extends React.Component {
 
   render () {
     const entry = this.getOpenEntry(this.props.data)
-    const { start } = entry
-    const elapsed = (moment().valueOf() - start) / 1000
+    const start = entry && entry.start
+    const elapsed = start ? (moment().valueOf() - start) / 1000 : 0
     const { goal, task } = this.state
     return (
       <Paper elevation={24} className={this.props.classes.margin}>
